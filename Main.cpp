@@ -5,7 +5,7 @@
 using Real = double;
 
 constexpr Real PI = 3.14159265358979323846;
-constexpr Real dt = 3e-8;
+constexpr Real dt = 1e-8;
 constexpr Real  g = 9.80665;
 
 template< typename Shape >
