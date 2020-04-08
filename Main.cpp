@@ -18,10 +18,10 @@ struct UniformlyAccelerated {
 
     auto go() {
         Shape* that = (Shape*)this;
-        that->x += that->vx * dt;
-        that->y += that->vy * dt;
-        that->vx += that->ax * dt;
-        that->vy += that->ay * dt;
+        that->x  += dt * that->vx;
+        that->y  += dt * that->vy;
+        that->vx += dt * that->ax;
+        that->vy += dt * that->ay;
     }
 };
 
@@ -37,10 +37,10 @@ struct Dragged {
         Shape* that = (Shape*)this;
         Real v = std::sqrt(vx * vx + vy * vy);
         Real uvx = vx / v, uvy = vy / v;
-        that->x += that->vx * dt;
-        that->y += that->vy * dt;
-        that->vx += (that->ax - 0.5 * that->density_of_fluid * v * v * that->area * that->drag_coefficient * uvx / that->mass) * dt;
-        that->vy += (that->ay - 0.5 * that->density_of_fluid * v * v * that->area * that->drag_coefficient * uvy / that->mass) * dt;
+        that->x  += dt * that->vx;
+        that->y  += dt * that->vy;
+        that->vx += dt * (that->ax - 0.5 * that->density_of_fluid * v * v * that->area * that->drag_coefficient * uvx / that->mass);
+        that->vy += dt * (that->ay - 0.5 * that->density_of_fluid * v * v * that->area * that->drag_coefficient * uvy / that->mass);
     }
 };
 
@@ -61,15 +61,15 @@ auto Main() {
     Real elapsed_time = 0, calculated_time = 0;
 
     Real radius = 0.01295,
-        mass = 0.0005,
-        theta = PI / 4,
-        v0 = 1.82,
-        x0 = 0,
-        y0 = 0.153,
-        vx = v0 * std::cos(theta),
-        vy = v0 * std::sin(theta),
-        ax = 0,
-        ay = -g;
+         mass   = 0.0005,
+         theta  = PI / 4,
+         v0 = 1.82,
+         x0 = 0,
+         y0 = 0.153,
+         vx = v0 * std::cos(theta),
+         vy = v0 * std::sin(theta),
+         ax = 0,
+         ay = -g;
     Real t_max2, R;
 
     Ball< UniformlyAccelerated > b1(radius, mass, x0, y0, vx, vy, ax, ay);
@@ -85,8 +85,8 @@ auto Main() {
     while (System::Update()) {
         camera.update(); {
             const auto tr1 = camera.createTransformer();
-            Real xl = Scene::Width() / camera.getScale(),
-                yl = Scene::Height() / camera.getScale();
+            Real xl = Scene::Width () / camera.getScale(),
+                 yl = Scene::Height() / camera.getScale();
 
             Line(camera.getCenter().x - xl / 2, 0, camera.getCenter().x + xl / 2, 0).draw(1 / camera.getScale(), Palette::Skyblue);
             Line(0, camera.getCenter().y - yl / 2, 0, camera.getCenter().y + yl / 2).draw(1 / camera.getScale(), Palette::Skyblue);
@@ -94,9 +94,8 @@ auto Main() {
             Circle(b1.x * 1000, -b1.y * 1000, b1.radius * 1000).draw(Palette::Lightpink);
         }
 
-        if (SimpleGUI::Button(U"START", Vec2(900, 100)))
+        if (SimpleGUI::Button(U"START", Vec2(900 , 100)))
             going = true;
-
         if (SimpleGUI::Button(U"PAUSE", Vec2(1100, 100)))
             going = false;
 
@@ -104,7 +103,6 @@ auto Main() {
         camera.draw(Palette::White);
 
         if (!going) continue;
-
         elapsed_time += Scene::DeltaTime() * timespeed;
 
         while (elapsed_time > (calculated_time += dt)) {
