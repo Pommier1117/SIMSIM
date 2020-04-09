@@ -18,8 +18,8 @@ struct UniformlyAccelerated {
 
     auto go() {
         Shape* that = (Shape*)this;
-        that->x += dt * that->vx;
-        that->y += dt * that->vy;
+        that->x  += dt * that->vx;
+        that->y  += dt * that->vy;
         that->vx += dt * that->ax;
         that->vy += dt * that->ay;
     }
@@ -37,8 +37,8 @@ struct Dragged {
         Shape* that = (Shape*)this;
         Real v = std::sqrt(vx * vx + vy * vy);
         Real uvx = vx / v, uvy = vy / v;
-        that->x += dt * that->vx;
-        that->y += dt * that->vy;
+        that->x  += dt * that->vx;
+        that->y  += dt * that->vy;
         that->vx += dt * (that->ax - 0.5 * that->density_of_fluid * v * v * that->area * that->drag_coefficient * uvx / that->mass);
         that->vy += dt * (that->ay - 0.5 * that->density_of_fluid * v * v * that->area * that->drag_coefficient * uvy / that->mass);
     }
@@ -61,15 +61,15 @@ auto Main() {
     Real elapsed_time = 0, calculated_time = 0;
 
     Real radius = 0.01295,
-        mass = 0.0005,
-        theta = PI / 4,
-        v0 = 1.82,
-        x0 = 0,
-        y0 = 0.153,
-        vx = v0 * std::cos(theta),
-        vy = v0 * std::sin(theta),
-        ax = 0,
-        ay = -g;
+         mass   = 0.0005,
+         theta  = PI / 4,
+         v0 = 1.82,
+         x0 = 0,
+         y0 = 0.153,
+         vx = v0 * std::cos(theta),
+         vy = v0 * std::sin(theta),
+         ax = 0,
+         ay = -g;
     Real t_max2, R;
 
     Ball< UniformlyAccelerated > b1(radius, mass, x0, y0, vx, vy, ax, ay);
