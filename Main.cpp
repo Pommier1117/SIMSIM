@@ -1,11 +1,10 @@
 #include <Siv3D.hpp>
-#include <iostream>
 #include <cmath>
 
 using Real = double;
 
 constexpr Real PI = 3.14159265358979323846;
-constexpr Real dt = 1e-8;
+constexpr Real dt = 1e-7;
 constexpr Real  g = 9.80665;
 
 template< typename Shape >
@@ -61,7 +60,7 @@ auto Main() {
     Real elapsed_time = 0, calculated_time = 0;
 
     Real radius = 0.01295,
-         mass   = 0.0005,
+         mass   = 0.01204,
          theta  = PI / 4,
          v0 = 1.82,
          x0 = 0,
@@ -72,7 +71,8 @@ auto Main() {
          ay = -g;
     Real t_max2, R;
 
-    Ball< UniformlyAccelerated > b1(radius, mass, x0, y0, vx, vy, ax, ay);
+    Ball< Dragged > b1(radius, mass, x0, y0, vx, vy, ax, ay);
+    // Ball< UniformlyAccelerated > b1(radius, mass, x0, y0, vx, vy, ax, ay);
     bool going = false, f1 = true, f2 = true;
 
     Window::Resize(1280, 720);
